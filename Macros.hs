@@ -33,9 +33,9 @@ instance (Read a) => Read (Macro a) where
 e1 = [ " (((lambda (\"x\") (lambda (\"x\") \"x\")) \"a\") \"b\") ",
        " (((lambda (x) (lambda (y) x)) y) foo) " ]
        
-m2 = [ " (define true  (lambda (x) (lambda (y) x))) ",
-       " (define false (lambda (x) (lambda (y) y))) ",
-       " (define if    (lambda (cond) (lambda (then) (lambda (else) ((cond then) else))))) " ]
+m2 = [ " (define true  (lambda (\"x\") (lambda (\"y\") \"x\"))) ",
+       " (define false (lambda (\"x\") (lambda (\"y\") \"y\"))) ",
+       " (define if    (lambda (\"cond\") (lambda (\"then\") (lambda (\"else\") ((\"cond\" \"then\") \"else\"))))) " ]
 
 e2 = [ " (((if true) this) that) " ,
        " (((if false) this) that) " ]
