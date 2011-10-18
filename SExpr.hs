@@ -69,3 +69,29 @@ unalpha :: SExpr (n, a) -> SExpr a
 unalpha (Name (_, a)) = Name a
 unalpha (Proc (_, var) expr) = Proc var (unalpha expr)
 unalpha (Call exp1 exp2) = Call (unalpha exp1) (unalpha exp2)
+
+
+------------
+-- Part 4 --
+------------
+
+-- beta performs beta-reductions (applications) on the SExpr
+-- Note that this beta simply wraps the function that does all the work (betaA,
+-- see below) by first calling alpha on the expression and then unalpha-ing the
+-- result
+beta :: (Eq a) => SExpr a -> SExpr a
+beta ex = unalpha (betaA (alpha ex))
+
+-- betaA does the actual beta-reductions with an initial alpha-ized expression
+betaA :: (Num n, Eq a) => SExpr (n, a) -> SExpr (n, a)
+betaA (Call (Proc v e) e') = betaA $ sub e v e'
+  where
+    sub (Name a) v e' = if a == v then e' else (Name a)
+    sub (Call e1 e2) v e' = (Call (sub e1 v e') (sub e2 v e'))
+    sub (Proc v1 e) v e' = if v1 == v then (Proc v1 e) else (Proc v1 (sub e v e'))
+betaA (Call (Name a) (Name b)) = (Call (Name a) (Name b))
+betaA (Call ex1 ex2) = if betaA1 == ex1 && betaA2 == ex2 then (Call ex1 ex2) else betaA (Call betaA1 betaA2)
+  where
+    betaA1 = (betaA ex1)
+    betaA2 = (betaA ex2)
+betaA x = x
