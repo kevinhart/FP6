@@ -83,7 +83,7 @@ beta :: (Eq a) => SExpr a -> SExpr a
 beta ex = unalpha (betaA (alpha ex))
 
 -- betaA does the actual beta-reductions with an initial alpha-ized expression
-betaA :: (Num n, Eq a) => SExpr (n, a) -> SExpr (n, a)
+betaA :: (Eq a) => SExpr a -> SExpr a
 betaA (Call (Proc v e) e') = betaA $ sub e v e'
   where
     sub (Name a) v e' = if a == v then e' else (Name a)
