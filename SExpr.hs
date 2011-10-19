@@ -84,14 +84,18 @@ beta ex = unalpha (betaA (alpha ex))
 
 -- betaA does the actual beta-reductions with an initial alpha-ized expression
 betaA :: (Eq a) => SExpr a -> SExpr a
-betaA (Call (Proc v e) e') = betaA $ sub e v e'
+--betaA (Call (Proc v e) e') = betaA $ sub e v e'
+betaA (Call exp1 exp2) = case betaA exp1 of
+  (Proc v e) -> betaA $ sub e v (betaA exp2)
+  x -> Call x (betaA exp2)
   where
     sub (Name a) v e' = if a == v then e' else (Name a)
     sub (Call e1 e2) v e' = (Call (sub e1 v e') (sub e2 v e'))
-    sub (Proc v1 e) v e' = if v1 == v then (Proc v1 e) else (Proc v1 (sub e v e'))
-betaA (Call (Name a) (Name b)) = (Call (Name a) (Name b))
-betaA (Call ex1 ex2) = if betaA1 == ex1 && betaA2 == ex2 then (Call ex1 ex2) else betaA (Call betaA1 betaA2)
-  where
-    betaA1 = (betaA ex1)
-    betaA2 = (betaA ex2)
+--    sub (Proc v1 e) v e' = if v1 == v then (Proc v1 e) else (Proc v1 (sub e v e'))
+    sub (Proc v1 e) v e' = (Proc v1 (sub e v e'))
+--betaA (Call (Name a) (Name b)) = (Call (Name a) (Name b))
+--betaA (Call ex1 ex2) = if betaA1 == ex1 && betaA2 == ex2 then (Call ex1 ex2) else betaA (Call betaA1 betaA2)
+--  where
+--    betaA1 = (betaA ex1)
+--    betaA2 = (betaA ex2)
 betaA x = x
