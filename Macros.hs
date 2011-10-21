@@ -1,6 +1,7 @@
 module Macros where
 
 import SExpr
+import Data.List (find)
 
 -- defines a Macro type as a key, value pair
 data Macro a = Macro { macroKey :: a, macroValue :: SExpr a }
@@ -11,21 +12,15 @@ type Macros a = [Macro a]
 -- substitute goes through an SExpr and attempts to replace Names with macros
 -- if the Name matches a macro key; otherwise nothing is substituted
 substitute :: (Eq a, Show a) => Macros a -> SExpr a -> SExpr a
-
--- base case; no macros so no substitution
-substitute [] exp = exp
-
--- look at the first macro and attempt to substitute it, then recurse on the
--- rest
-substitute (x:xs) exp = substitute xs (sub x exp)
-  where
-    -- test the name against the macro key and substitute the macro value
-    -- on success
-    sub mac (Name a) = if a == (macroKey mac) then (macroValue mac) else (Name a)
-    
-    -- induction on the body of a Proc and on each "part" of a Call
-    sub mac (Proc a se) = Proc a (sub  mac se)
-    sub mac (Call sea seb) = Call (sub mac sea) (sub mac seb)
+-- perform structural induction until you find a Name
+substitute macros (Proc v body) = Proc v (substitute macros body)
+substitute macros (Call ex1 ex2) = Call (substitute macros ex1) (substitute macros ex2)
+-- Once you find a Name, look for a macro that matches the contained name
+substitute macros (Name nym) = case find (\m -> (macroKey m) == nym) macros of
+  -- If you found one, return the value of the macro after substituting in it.
+  Just m -> substitute macros (macroValue m)
+  -- If you didn't find a matching macro, don't change anything
+  Nothing -> Name nym
 
 -- implements Show for a Macro: "(define MACROKEY MACROVAL)"
 showsMacro :: (Show a) => Macro a -> String -> String

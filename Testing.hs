@@ -79,13 +79,3 @@ countresult = testresult counttest
 arithresult = testresult arithtest
 predresult = testresult predtest
 recurresult = testresult recurtest
-
--- since many macros contain macros themselves and we want to prove the y-combinator
--- successfully reduces, (1) apply macro substitutions until no changes are
--- observed, then (2) apply beta reduction; if a change occurs go to (1) else stop
-fullyReduce result = if reduction == result then result else fullyReduce reduction
-  where
-    reduction = beta $ applyAllMacros result
-    applyAllMacros r = if r == substituted then substituted else applyAllMacros substituted
-      where
-        substituted = substitute macros r
