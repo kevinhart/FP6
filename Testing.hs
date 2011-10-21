@@ -20,7 +20,8 @@ boolstest = [ " (((\"if\" \"true\") \"this\") \"that\") " ,
 cnumsm = [ "(define \"0\" (lambda (\"f\") (lambda (\"x\") \"x\")))",
            "(define \"1\" (lambda (\"f\") (lambda (\"x\") (\"f\" \"x\"))))",
            "(define \"2\" (lambda (\"f\") (lambda (\"x\") (\"f\" (\"f\" \"x\")))))",
-           "(define \"3\" (lambda (\"f\") (lambda (\"x\") (\"f\" (\"f\" (\"f\" \"x\"))))))" ]
+           "(define \"3\" (lambda (\"f\") (lambda (\"x\") (\"f\" (\"f\" (\"f\" \"x\"))))))",
+	   "(define \"4\" (lambda (\"f\") (lambda (\"x\") (\"f\" (\"f\" (\"f\" (\"f\" \"x\")))))))" ]
 
 cnumstest = [ "((\"0\" (lambda (\"f\") (\"f\" \"hello\"))) (lambda (\"x\") \"x\"))",
               "((\"1\" (lambda (\"f\") (\"f\" \"hello\"))) (lambda (\"x\") \"x\"))",
