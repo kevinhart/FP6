@@ -1,0 +1,10 @@
+Matthew MacEwan and Kevin Hart
+
+SExpr.hs contains code pertaining to the SExpr data type.  That is: alpha,
+unalpha, beta, and the Show and Read implementations.  Macros.hs contains the
+implementation of substitute and the Macros type.
+
+Testing.hs imports both modules.  It also contains several lists of strings
+representing lambda expressions and macros from homework 2.  The testresult
+function takes a list of strings representing SExpr String and reads them,
+substitutes all the macros, and runs beta on each of them.
