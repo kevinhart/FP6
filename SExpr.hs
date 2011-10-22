@@ -1,6 +1,7 @@
 module SExpr where
 
 import Data.List (find)
+import Debug.Trace (trace)
 
 data SExpr a = Name a | Proc a (SExpr a) | Call (SExpr a) (SExpr a) deriving Eq
 
@@ -79,14 +80,15 @@ unalpha (Call exp1 exp2) = Call (unalpha exp1) (unalpha exp2)
 -- Note that this beta simply wraps the function that does all the work (betaA,
 -- see below) by first calling alpha on the expression and then unalpha-ing the
 -- result
-beta :: (Eq a) => SExpr a -> SExpr a
+beta :: (Show a,Eq a) => SExpr a -> SExpr a
 beta ex = unalpha (betaA (alpha ex))
 
 -- betaA does the actual beta-reductions with an initial alpha-ized expression
-betaA :: (Eq a) => SExpr a -> SExpr a
+betaA :: (Show a,Eq a) => SExpr a -> SExpr a
+betaA s | trace (show s) False = undefined
 --betaA (Call (Proc v e) e') = betaA $ sub e v e'
 betaA (Call exp1 exp2) = case betaA exp1 of
-  (Proc v e) -> betaA $ sub e v (betaA exp2)
+  (Proc v e) -> betaA $ sub e v {-(betaA-} exp2--)
   x -> Call x (betaA exp2)
   where
     sub (Name a) v e' = if a == v then e' else (Name a)
